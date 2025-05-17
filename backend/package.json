@@ -1,0 +1,23 @@
+{
+  "name": "emre-shopping-backend",
+  "version": "1.0.0",
+  "description": "Emre Shopping Backend API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "init-db": "node src/database/init-db.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
