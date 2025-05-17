@@ -7,7 +7,7 @@ const CampaignCard = ({ campaign }) => {
   return (
     <div className="campaign-card">
       <div className="campaign-image">
-        <img src={campaign.image} alt={campaign.title} />
+        <img src={campaign.image} alt={campaign.title || 'Kampanya'} />
       </div>
     </div>
   );
