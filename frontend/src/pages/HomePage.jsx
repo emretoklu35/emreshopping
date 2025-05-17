@@ -1,28 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addVisitedProduct, clearVisited } from "../redux/visited";
+
 import useFetch from "../hooks/useFetch";
 import campaignService from "../services/campaignService";
-import Slider from "../components/ui/Slider/Slider";
 import electronicsService from "../services/electronicsService";
 import recommendationsService from "../services/recommendationsService";
+
+import Slider from "../components/ui/Slider/Slider";
 import CampaignCard from "../components/ui/CampaignCard/CampaignCard";
 import ProductCard from "../components/ui/ProductCard/ProductCard";
 import ElectronicProductSlider from "../components/ui/ElectronicProductSlider/ElectronicProductSlider";
 
 import "./HomePage.css";
 
-/**
- * TODO:
- * 1. setup redux architecture
- * 2. move lastVisitedProducts to redux
- * 
- * https://react-redux.js.org/introduction/getting-started
- *
- * only if first two are complete
- * 3. add the redirectUrl to recommendations (check left todo)
- * 4. fix the css issue with the home page carousel (sliders - alignments)
- */
-
 const HomePage = () => {
+  const dispatch = useDispatch();
+  const sonGezilenUrunler = useSelector((state) => state.visited.items);
+
   const { data: campaigns, loading: campaignsLoading } = useFetch(
     campaignService.getAllCampaigns,
     []
@@ -35,19 +30,17 @@ const HomePage = () => {
     recommendationsService.getAllRecommendations,
     []
   );
-  console.log(electronics);
-  // TODO: use redux instead react state
-  // TODO: Get a redux architecture going
-  const [sonGezilenUrunler, setSonGezilenUrunler] = useState([]);
 
-  function updateSonGezilenUrunler(product) {
-    setSonGezilenUrunler((prev) => [...prev, product]);
-  }
+  // Sadece id kullanarak ürünleri Redux'a gönder
+  const updateSonGezilenUrunler = (product) => {
+    console.log("🧪 Redux'a gönderilen ürün:", product);
+    dispatch(addVisitedProduct(product));
+  };
 
   return (
     <div className="home-page">
+      {/* Kampanyalar */}
       <section className="campaigns-section">
-        <div className="section-header"></div>
         <div className="campaigns-grid">
           {campaignsLoading
             ? Array(8)
@@ -63,6 +56,7 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Slider ve Elektronik Ürünler */}
       <div
         style={{
           display: "flex",
@@ -102,9 +96,18 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Son Gezilen Ürünler */}
       {sonGezilenUrunler.length > 0 && (
         <section className="section son-gezilen-urunler-section">
-          <h2 className="section-title">Son Gezilen Ürünler</h2>
+          <div className="section-header-with-action">
+            <h2 className="section-title">Son Gezilen Ürünler</h2>
+            <button
+              className="clear-button"
+              onClick={() => dispatch(clearVisited())}
+            >
+              Temizle
+            </button>
+          </div>
           <div className="products-grid">
             {sonGezilenUrunler.map((product) => (
               <div className="product-item" key={product.id}>
